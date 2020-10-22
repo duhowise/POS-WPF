@@ -1,0 +1,129 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:browser="clr-namespace:Magentix.Presentation.Controls.Browser;assembly=Magentix.Presentation.Controls"
+             xmlns:local="clr-namespace:Magentix.Modules.BackupModule" x:Class="Magentix.Modules.BackupModule.BackupModuleView"
+             mc:Ignorable="d" 
+             d:DesignHeight="358.931" d:DesignWidth="586.186" Margin="10,10,5,0">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Magentix.Presentation.Controls;component/OfficeTab.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="0,0,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <TabControl Template="{StaticResource OfficeTabControl}" SelectedIndex="1">
+            <TabItem IsEnabled="False" IsHitTestVisible="False" Header="{LocText DatabaseBackupsMenu}" FontSize="14">
+            </TabItem>
+            <TabItem Header="{LocText BackupsMenu}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <DataGrid Grid.Row="0" x:Name="dgBackupList"  ItemsSource="{Binding Backups}" SelectedItem="{Binding SelectedBackup}" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False" FontSize="14">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Width="0.25*" Binding="{Binding NameStr}"/>
+                            <DataGridTextColumn Header="Database Type" Width="0.25*"  Binding="{Binding DatabaseType}"/>
+                            <DataGridTextColumn Header="Date" Width="0.25*"  Binding="{Binding Date}"/>
+                            <DataGridTextColumn Header="Backup Type" Width="0.25*"  Binding="{Binding BackupReasonStr}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <ItemsControl Grid.Row="1">
+                        <StackPanel Orientation="Horizontal">
+                            <Button HorizontalAlignment="Left" Margin="0,10,10,10" MinWidth="70" Content="{Binding BackupDatabaseCommand.Caption}" Command="{Binding BackupDatabaseCommand}" />
+                            <Button HorizontalAlignment="Left" Margin="0,10,10,10" MinWidth="70" Content="{Binding RestoreDatabaseCommand.Caption}" Command="{Binding RestoreDatabaseCommand}" />
+                            <Button HorizontalAlignment="Left" Margin="0,10,10,10" MinWidth="70" Content="{Binding RestoreFromFileCommand.Caption}" Command="{Binding RestoreFromFileCommand}" />
+                            <Button HorizontalAlignment="Left" Margin="0,10,10,10" MinWidth="70" Content="{Binding OpenBackupLocationCommand.Caption}" Command="{Binding OpenBackupLocationCommand}" />
+                        </StackPanel>
+                    </ItemsControl>
+                </Grid>
+            </TabItem>
+            <TabItem Header="{LocText Settings}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <Label Content="Database Name:" />
+                        <TextBox HorizontalAlignment="Left" MinWidth="150" Text="{Binding DatabaseName}" />
+                        <Label FontStyle="Italic" Foreground="#FF808080">Leave empty to auto find database name.</Label>
+                        <Label Content="Backup Location:" />
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox HorizontalAlignment="Left" MinWidth="150" Text="{Binding BackupLocation}" />
+                            <Button HorizontalAlignment="Left" MinWidth="30" Content="X" Command="{Binding ClearBackupLocationCommand}" />
+                            <Button HorizontalAlignment="Left" MinWidth="30" Content="..." Command="{Binding SelectBackupLocationCommand}" />
+                        </StackPanel>
+                        <Label FontStyle="Italic" Foreground="#FF808080">Leave empty for default backup location.</Label>
+                        <CheckBox Margin="0,10,0,0" IsChecked="{Binding AutoCreateBackups}">Auto create backups after work period ends.</CheckBox>
+                        <Label FontStyle="Italic" Foreground="#FF808080">You can also use "Backup Database" Action for creating custom backup rules.</Label>
+                        <CheckBox Margin="0,10,0,0" IsChecked="{Binding AutoCreateBackupsOnMigrate}">Auto create backups before upgrading to a new version.</CheckBox>
+                        <CheckBox Margin="0,10,0,0" IsChecked="{Binding ForceMigrateAfterRestoration}">Migrate after restoration.</CheckBox>
+                        <CheckBox Margin="0,10,0,0" IsChecked="{Binding AllowReplace}">Allow overwriting database files if database names does not match during restore.</CheckBox>
+                        <Button HorizontalAlignment="Left" Margin="0,10,20,10" MinWidth="70" Content="{Binding SaveSettingsCommand.Caption}" Command="{Binding SaveSettingsCommand}" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem IsEnabled="False" IsHitTestVisible="False" Header="{LocText DatabaseToolsMenu}" FontSize="14">
+            </TabItem>
+            <TabItem Header="{LocText DatabaseTasksMenu}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <DataGrid Grid.Row="0" x:Name="TaskDataGrid"  ItemsSource="{Binding DatabaseTasks}" SelectedItem="{Binding SelectedDatabaseTask}" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False" FontSize="14">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Width="0.5*" Binding="{Binding NameStr}"/>
+                            <DataGridTextColumn Header="Task Type" Width="0.5*"  Binding="{Binding TaskType}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    
+                    <ItemsControl Grid.Row="1">
+                        <StackPanel>
+                            <TextBlock TextWrapping="WrapWithOverflow" TextBlock.FontStyle="Italic" TextBlock.Foreground="#FF808080">You can create additional tasks by creating *.sql, *.bat or *.vbs files under "[MyDocuments]\MagentixPOS3\Database Tasks" folder</TextBlock>
+                            <StackPanel Orientation="Horizontal">
+                                <Button HorizontalAlignment="Left" Margin="0,10,10,10" MinWidth="70" Content="{Binding ExecuteDatabaseTaskCommand.Caption}" Command="{Binding ExecuteDatabaseTaskCommand}" />
+                                <Button HorizontalAlignment="Left" Margin="0,10,10,10" MinWidth="70" Content="{Binding CreateDefaultTasksCommand.Caption}" Command="{Binding CreateDefaultTasksCommand}" Visibility="{Binding IsCreateDefaultTasksButtonVisible, Converter={StaticResource VisibilityConverter}}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </ItemsControl>
+                </Grid>
+            </TabItem>
+            <!--TabItem Header="Tools">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <GroupBox Header="Import - Export" Margin="4">
+                            <StackPanel>
+                                <CheckBox Margin="0,10,0,0" IsChecked="{Binding AutoCreateBackupsOnImport}">Auto create backups before importing data.</CheckBox>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button HorizontalAlignment="Left" Margin="0,10,20,10" MinWidth="70" Content="{Binding ExportFileCommand.Caption}" Command="{Binding ExportFileCommand}" />
+                                    <Button HorizontalAlignment="Left" Margin="0,10,20,10" MinWidth="70" Content="{Binding ImportFileCommand.Caption}" Command="{Binding ImportFileCommand}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Training Mode" Margin="4">
+                            <StackPanel Orientation="Horizontal">
+                                <Button HorizontalAlignment="Left" Margin="0,10,20,10" MinWidth="70" Content="{Binding EnableTrainingModeCommand.Caption}" Command="{Binding EnableTrainingModeCommand}" />
+                                <Button HorizontalAlignment="Left" Margin="0,10,20,10" MinWidth="70" Content="{Binding DisableTrainingModeCommand.Caption}" Command="{Binding DisableTrainingModeCommand}" />
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </Grid>
+            </-->
+        </TabControl>
+    </Grid>
+</UserControl>
